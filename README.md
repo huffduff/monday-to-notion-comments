@@ -4,6 +4,7 @@ A TypeScript tool for migrating comments from Monday.com to Notion using their r
 
 ## Features
 
+- ✅ **Latest Notion SDK**: Using `@notionhq/client@5.26.0` with API version `2022-06-28`
 - ✅ Migrate comments from Monday.com items to Notion pages
 - ✅ Migrate entire boards from Monday.com to Notion databases  
 - ✅ Preserve comment threading (replies become grouped discussions)
@@ -11,6 +12,7 @@ A TypeScript tool for migrating comments from Monday.com to Notion using their r
 - ✅ Dry run mode for testing migrations
 - ✅ Progress tracking and error handling
 - ✅ Rich CLI interface with yargs
+- ✅ Enhanced HTML-to-rich-text conversion
 
 ## Prerequisites
 

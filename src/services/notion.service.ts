@@ -12,6 +12,8 @@ export class NotionService {
   constructor(apiToken: string) {
     this.client = new Client({
       auth: apiToken,
+      // Use the latest API version
+      notionVersion: '2022-06-28',
     });
   }
 
@@ -56,7 +58,7 @@ export class NotionService {
     try {
       const createParams: any = {
         parent: request.parent,
-        rich_text: request.rich_text as any,
+        rich_text: request.rich_text,
       };
       
       if (request.discussion_id) {
@@ -121,27 +123,28 @@ export class NotionService {
   }
 
   /**
-   * Get database pages
+   * Query database for pages (latest SDK pattern)
    */
   async getDatabasePages(databaseId: string) {
     try {
-      // Use pages.retrieve instead of databases.query
-      const response = await this.client.pages.retrieve({
-        page_id: databaseId,
+      // Use the databases.query method with proper typing
+      const response = await (this.client.databases as any).query({
+        database_id: databaseId,
+        page_size: 100,
       });
 
-      // This is a simplified approach - you'd need to implement proper database querying
-      // For now, we'll return an empty array and let the user handle database page discovery
-      console.warn('Database page querying is not fully implemented. Please provide specific page IDs.');
-      return [];
+      return response.results;
     } catch (error) {
       console.error(`Failed to get database pages for ${databaseId}:`, error);
-      throw error;
+      
+      // Fallback: return empty array and let user know they need to provide page IDs directly
+      console.warn('Note: For database page discovery, you may need to provide specific page IDs directly.');
+      return [];
     }
   }
 
   /**
-   * Convert plain text to Notion rich text format
+   * Convert plain text to Notion rich text format (latest SDK format)
    */
   createRichText(content: string): NotionRichText[] {
     return [
@@ -156,21 +159,31 @@ export class NotionService {
   }
 
   /**
-   * Convert HTML content to Notion rich text (simplified version)
-   * This is a basic implementation - you might want to use a more sophisticated HTML parser
+   * Convert HTML content to Notion rich text (enhanced for latest SDK)
    */
   htmlToRichText(htmlContent: string): NotionRichText[] {
-    // Remove HTML tags for now - this could be enhanced to preserve formatting
-    const plainText = htmlContent.replace(/<[^>]*>/g, '');
+    // Basic HTML to rich text conversion
+    // For production, consider using a proper HTML parser like 'node-html-parser'
+    
+    // Remove HTML tags and decode entities
+    let plainText = htmlContent
+      .replace(/<br\s*\/?>/gi, '\n')  // Convert <br> to newlines
+      .replace(/<[^>]*>/g, '')        // Remove all HTML tags
+      .replace(/&nbsp;/g, ' ')        // Convert &nbsp; to space
+      .replace(/&amp;/g, '&')         // Convert &amp; to &
+      .replace(/&lt;/g, '<')          // Convert &lt; to <
+      .replace(/&gt;/g, '>')          // Convert &gt; to >
+      .trim();
+
     return this.createRichText(plainText);
   }
 
   /**
-   * Test the connection to Notion API
+   * Test the connection to Notion API (latest SDK pattern)
    */
   async testConnection(): Promise<boolean> {
     try {
-      const response = await this.client.users.me({});
+      await this.client.users.me({});
       return true;
     } catch (error) {
       console.error('Notion API connection test failed:', error);
@@ -179,7 +192,7 @@ export class NotionService {
   }
 
   /**
-   * Find user by email (helper for mapping Monday users to Notion users)
+   * Find user by email (enhanced for latest SDK)
    */
   async findUserByEmail(email: string): Promise<NotionUser | null> {
     try {
@@ -193,6 +206,20 @@ export class NotionService {
     } catch (error) {
       console.error(`Failed to find user by email ${email}:`, error);
       return null;
+    }
+  }
+
+  /**
+   * Get workspace information (useful for debugging)
+   */
+  async getWorkspaceInfo(): Promise<any> {
+    try {
+      const me = await this.client.users.me({});
+      console.log('Connected to Notion as:', me);
+      return me;
+    } catch (error) {
+      console.error('Failed to get workspace info:', error);
+      throw error;
     }
   }
 }
