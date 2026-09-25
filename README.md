@@ -9,6 +9,7 @@ A comprehensive TypeScript tool for migrating comments from Monday.com to Notion
 ## 🚀 Features
 
 - ✅ **Latest Notion SDK**: Using `@notionhq/client@5.26.0` with API version `2022-06-28`
+- ✅ **Advanced HTML Conversion**: Comprehensive Monday.com HTML → Notion rich text with full formatting preservation
 - ✅ **Single Item Migration**: Migrate comments from specific Monday items to Notion pages
 - ✅ **Board Migration**: Migrate entire boards from Monday.com to Notion databases  
 - ✅ **Thread Preservation**: Convert Monday reply threads to Notion discussion groups
@@ -16,7 +17,16 @@ A comprehensive TypeScript tool for migrating comments from Monday.com to Notion
 - ✅ **Dry Run Mode**: Test migrations safely without making changes
 - ✅ **Progress Tracking**: Comprehensive error handling and migration reports
 - ✅ **Rich CLI**: Full-featured command interface with yargs
-- ✅ **HTML Conversion**: Enhanced HTML-to-rich-text conversion with entity decoding
+
+### 🎨 **Formatting Support**
+Preserves **ALL** Monday.com formatting when migrating to Notion:
+- **Bold**, *Italic*, <u>Underline</u>, ~~Strikethrough~~
+- `Code blocks` and snippets
+- [Clickable links](https://example.com) with URLs
+- **@User mentions** (highlighted)
+- • Bulleted and numbered lists
+- Line breaks and paragraphs
+- HTML entities (properly decoded)
 
 ## 📋 Prerequisites
 
@@ -178,10 +188,10 @@ npm start -- <commands>
 
 ## ⚠️ Current Limitations
 
-- HTML formatting in Monday comments is converted to plain text
 - User mapping requires matching emails between platforms
 - Board-to-database migration uses positional matching
-- No support for comment attachments or @mentions
+- No support for comment attachments or file uploads
+- @mentions converted to highlighted text (not interactive Notion mentions)
 
 ## 🔮 Future Enhancements  
 
