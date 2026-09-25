@@ -22,6 +22,7 @@
   "dependencies": {
     "@notionhq/client": "^5.26.0",
     "@types/yargs": "^17.0.35",
+    "node-html-parser": "^9.0.4",
     "yargs": "^18.2.0"
   }
 }

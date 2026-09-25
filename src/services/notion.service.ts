@@ -5,6 +5,7 @@ import {
   NotionRichText,
   NotionUser
 } from '../types';
+import { HtmlToNotionConverter } from '../utils/html-converter';
 
 export class NotionService {
   private client: Client;
@@ -159,23 +160,11 @@ export class NotionService {
   }
 
   /**
-   * Convert HTML content to Notion rich text (enhanced for latest SDK)
+   * Convert Monday.com HTML content to Notion rich text with full formatting preservation
+   * Supports: bold, italic, underline, strikethrough, links, lists, mentions, code, paragraphs
    */
   htmlToRichText(htmlContent: string): NotionRichText[] {
-    // Basic HTML to rich text conversion
-    // For production, consider using a proper HTML parser like 'node-html-parser'
-    
-    // Remove HTML tags and decode entities
-    let plainText = htmlContent
-      .replace(/<br\s*\/?>/gi, '\n')  // Convert <br> to newlines
-      .replace(/<[^>]*>/g, '')        // Remove all HTML tags
-      .replace(/&nbsp;/g, ' ')        // Convert &nbsp; to space
-      .replace(/&amp;/g, '&')         // Convert &amp; to &
-      .replace(/&lt;/g, '<')          // Convert &lt; to <
-      .replace(/&gt;/g, '>')          // Convert &gt; to >
-      .trim();
-
-    return this.createRichText(plainText);
+    return HtmlToNotionConverter.convertHtml(htmlContent);
   }
 
   /**
