@@ -23,10 +23,19 @@ Preserves **ALL** Monday.com formatting when migrating to Notion:
 - **Bold**, *Italic*, <u>Underline</u>, ~~Strikethrough~~
 - `Code blocks` and snippets
 - [Clickable links](https://example.com) with URLs
-- **@User mentions** (highlighted)
+- **User mentions**: Interactive @mentions for users in Notion workspace, highlighted text for missing users
 - • Bulleted and numbered lists
 - Line breaks and paragraphs
 - HTML entities (properly decoded)
+
+### 👥 **User Mention Handling**
+- **Users in both platforms**: Converted to interactive Notion @mentions (clickable)  
+- **Users missing from Notion**: Converted to bold orange text (visual preservation)
+- **Email-based matching**: Automatically maps users between platforms via email
+- **Graceful fallbacks**: Migration continues even when users are missing
+- **Re-runnable**: Add missing users to Notion and re-migrate to upgrade mentions
+
+See [Mention Handling Guide](docs/mention-handling.md) for detailed behavior and best practices.
 
 ## 📋 Prerequisites
 
@@ -188,10 +197,11 @@ npm start -- <commands>
 
 ## ⚠️ Current Limitations
 
-- User mapping requires matching emails between platforms
+- User mapping requires matching emails between platforms (manual mapping possible)
 - Board-to-database migration uses positional matching
 - No support for comment attachments or file uploads
-- @mentions converted to highlighted text (not interactive Notion mentions)
+- Missing Notion users become highlighted text (not interactive mentions)
+- Complex nested HTML formatting may need manual review
 
 ## 🔮 Future Enhancements  
 

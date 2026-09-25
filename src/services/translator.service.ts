@@ -10,6 +10,7 @@ import {
 } from '../types';
 import { MondayService } from '../services/monday.service';
 import { NotionService } from '../services/notion.service';
+import { EnhancedHtmlConverter } from '../utils/enhanced-html-converter';
 
 export class CommentTranslator {
   private mondayService: MondayService;
@@ -88,12 +89,21 @@ export class CommentTranslator {
   }
 
   /**
-   * Convert Monday comment content to Notion rich text
+   * Convert Monday comment content to Notion rich text with proper mention handling
    */
   private convertContentToRichText(content: string): NotionRichText[] {
-    // Handle HTML content from Monday
+    // Handle HTML content from Monday with mention extraction
     if (content.includes('<') && content.includes('>')) {
-      return this.notionService.htmlToRichText(content);
+      const { richText, mentions } = EnhancedHtmlConverter.convertWithMentions(content);
+      
+      // Resolve mentions using our user mappings
+      const resolvedRichText = EnhancedHtmlConverter.resolveMentions(
+        richText, 
+        mentions, 
+        this.userMappings
+      );
+      
+      return resolvedRichText;
     }
     
     // Handle plain text
